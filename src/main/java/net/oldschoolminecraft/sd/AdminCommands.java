@@ -5,7 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftServer;
+
+import java.util.concurrent.TimeUnit;
 
 public class AdminCommands implements CommandExecutor
 {
@@ -31,13 +32,15 @@ public class AdminCommands implements CommandExecutor
                     "&eScheduled Death - &dHelp",
                     "&a/sd reload - Reload config",
                     "&a/sd cancel - Reset restart timer",
+                    "&a/sd timer - Check the restart timer",
                     "&a/sd postpone <time> - Postpone restart");
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
         {
             plugin.getConfig().reload();
-            sendMultiLine(sender, "&aScheduledDeath configuration reloaded.");
+            System.out.println("[Scheduled Death] Configuration has been reloaded");
+            sendMultiLine(sender, "&Configuration reloaded.");
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("cancel"))
@@ -45,6 +48,25 @@ public class AdminCommands implements CommandExecutor
             System.out.println("[Scheduled Death] The automatic restart has been cancelled by " + sender.getName());
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been cancelled by the system administrator."));
             plugin.resetTaskTimer();
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("timer"))
+        {
+            double timeToLive = plugin.getTimeToLive();
+
+            long days = TimeUnit.SECONDS.toDays((long) timeToLive);
+            long hours = TimeUnit.SECONDS.toHours((long) timeToLive);
+            long minutes = TimeUnit.SECONDS.toMinutes((long) timeToLive);
+            long seconds = (long) timeToLive;
+
+            StringBuilder sb = new StringBuilder();
+            if (days != 0) sb.append(days).append(" day(s) ");
+            if (hours != 0) sb.append(hours).append(" hour(s) ");
+            if (minutes != 0) sb.append(minutes).append(" minute(s) ");
+            if (seconds != 0) sb.append(seconds).append(" second(s) ");
+            String unitsRemaining = sb.toString().trim();
+
+            sendMultiLine(sender, String.format("&eThere is currently &c%s &eleft until restart.", unitsRemaining));
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("postpone"))

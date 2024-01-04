@@ -76,6 +76,11 @@ public class ScheduledDeath extends JavaPlugin
         secondsTTL += seconds;
     }
 
+    public double getTimeToLive()
+    {
+        return secondsTTL;
+    }
+
     public int getRestartTaskID()
     {
         return restartTaskID;
