@@ -39,6 +39,8 @@ public class AdminCommands implements CommandExecutor
         if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
         {
             plugin.getConfig().reload();
+            Bukkit.getScheduler().cancelTask(plugin.getRestartTaskID());
+            plugin.reinitializeRestartTask();
             System.out.println("[Scheduled Death] Configuration has been reloaded");
             sendMultiLine(sender, "&Configuration reloaded.");
         }
@@ -55,8 +57,11 @@ public class AdminCommands implements CommandExecutor
             double timeToLive = plugin.getTimeToLive();
 
             long days = TimeUnit.SECONDS.toDays((long) timeToLive);
+            timeToLive -= TimeUnit.DAYS.toSeconds(days);
             long hours = TimeUnit.SECONDS.toHours((long) timeToLive);
+            timeToLive -= TimeUnit.HOURS.toSeconds(hours);
             long minutes = TimeUnit.SECONDS.toMinutes((long) timeToLive);
+            timeToLive -= TimeUnit.MINUTES.toSeconds(minutes);
             long seconds = (long) timeToLive;
 
             StringBuilder sb = new StringBuilder();

@@ -21,6 +21,20 @@ public class ScheduledDeath extends JavaPlugin
 
         getCommand("sd").setExecutor(new AdminCommands(this));
 
+        reinitializeRestartTask();
+
+        System.out.println("ScheduledDeath has been enabled");
+    }
+
+    public void resetTaskTimer()
+    {
+        long timeToLive = config.getConfigLong("timeToLive");
+        secondsTTL = (int) (timeToLive / 20);
+        System.out.println("[Scheduled Death] Server will die after " + Math.round((float) timeToLive / (20 * 60 * 60)) + " hours");
+    }
+
+    public void reinitializeRestartTask()
+    {
         restartTaskID = getServer().getScheduler().scheduleAsyncRepeatingTask(this, () ->
         {
             if (secondsTTL == (60 * 5))
@@ -62,13 +76,6 @@ public class ScheduledDeath extends JavaPlugin
 
             secondsTTL--;
         }, 0L, 20);
-    }
-
-    public void resetTaskTimer()
-    {
-        long timeToLive = config.getConfigLong("timeToLive");
-        secondsTTL = (int) (timeToLive / 20);
-        System.out.println("[Scheduled Death] Server will die after " + Math.round((float) timeToLive / (20 * 60 * 60)) + " hours");
     }
 
     public void incrementTaskTimer(double seconds)
