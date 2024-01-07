@@ -29,7 +29,7 @@ public class AdminCommands implements CommandExecutor
         if (args.length == 0)
         {
             sendMultiLine(sender,
-                    "&eScheduled Death - &dHelp",
+                    String.format("&eScheduled Death &cv%s&e - &dHelp", plugin.getDescription().getVersion()),
                     "&a/sd reload - Reload config",
                     "&a/sd cancel - Reset restart timer",
                     "&a/sd timer - Check the restart timer",
