@@ -55,23 +55,8 @@ public class AdminCommands implements CommandExecutor
         if (args.length == 1 && args[0].equalsIgnoreCase("timer"))
         {
             double timeToLive = plugin.getTimeToLive();
-
-            long days = TimeUnit.SECONDS.toDays((long) timeToLive);
-            timeToLive -= TimeUnit.DAYS.toSeconds(days);
-            long hours = TimeUnit.SECONDS.toHours((long) timeToLive);
-            timeToLive -= TimeUnit.HOURS.toSeconds(hours);
-            long minutes = TimeUnit.SECONDS.toMinutes((long) timeToLive);
-            timeToLive -= TimeUnit.MINUTES.toSeconds(minutes);
-            long seconds = (long) timeToLive;
-
-            StringBuilder sb = new StringBuilder();
-            if (days != 0) sb.append(days).append(" day(s) ");
-            if (hours != 0) sb.append(hours).append(" hour(s) ");
-            if (minutes != 0) sb.append(minutes).append(" minute(s) ");
-            if (seconds != 0) sb.append(seconds).append(" second(s) ");
-            String unitsRemaining = sb.toString().trim();
-
-            sendMultiLine(sender, String.format("&eThere is currently &c%s &eleft until restart.", unitsRemaining));
+            Time time = new Time((long) timeToLive, TimeUnit.SECONDS);
+            sendMultiLine(sender, String.format("&eThere is currently &c%s &eleft until restart.", time));
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("postpone"))
