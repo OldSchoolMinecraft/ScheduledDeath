@@ -83,6 +83,11 @@ public class ScheduledDeath extends JavaPlugin
         secondsTTL += seconds;
     }
 
+    public void setTaskTimer(double seconds)
+    {
+        secondsTTL = seconds;
+    }
+
     public double getTimeToLive()
     {
         return secondsTTL;

@@ -33,7 +33,8 @@ public class AdminCommands implements CommandExecutor
                     "&a/sd reload - Reload config",
                     "&a/sd cancel - Reset restart timer",
                     "&a/sd timer - Check the restart timer",
-                    "&a/sd postpone <time> - Postpone restart");
+                    "&a/sd postpone <time> - Postpone restart",
+                    "&a/sd set <time> - Override the preconfigured timer");
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
@@ -69,7 +70,20 @@ public class AdminCommands implements CommandExecutor
                 System.out.println("[Scheduled Death] The automatic restart has been postponed for " + unit + " by " + sender.getName());
                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been postponed for &c" + unit + " &dby the system administrator."));
             } catch (Time.TimeParseException ex) {
-                sendMultiLine(sender, "&cYou provided an invalid time! Try using of these for seconds, minutes, or hours: &b30s, 5m, 1h");
+                sendMultiLine(sender, "&cYou provided an invalid time! Try using one of these for seconds, minutes, or hours: &b30s, 5m, 1h");
+            }
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("set"))
+        {
+            try
+            {
+                Time time = Time.parseString(args[1]);
+                plugin.setTaskTimer(time.toSeconds());
+                System.out.println("[Scheduled Death] The automatic restart has been reassigned by " + sender.getName() + ". The server will now restart in: " + time);
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been altered by the system administrator. The server will now restart in: &c" + time));
+            } catch (Time.TimeParseException ex) {
+                sendMultiLine(sender, "&cYou provided an invalid time! Try using one of these for seconds, minutes, or hours: &b30s, 5m, 1h");
             }
         }
 
