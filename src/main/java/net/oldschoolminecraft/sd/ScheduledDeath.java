@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ScheduledDeath extends JavaPlugin
@@ -12,6 +13,7 @@ public class ScheduledDeath extends JavaPlugin
     private SDConfig config;
     private double secondsTTL;
     private int restartTaskID;
+    public boolean restartImminent;
 
     public void onEnable()
     {
@@ -20,6 +22,7 @@ public class ScheduledDeath extends JavaPlugin
         resetTaskTimer();
 
         getCommand("sd").setExecutor(new AdminCommands(this));
+        getServer().getPluginManager().registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, new CommandPreProcessor(this), Event.Priority.Normal, this);
 
         reinitializeRestartTask();
 
@@ -57,6 +60,7 @@ public class ScheduledDeath extends JavaPlugin
 
             if (secondsTTL <= 5)
             {
+                restartImminent = true;
                 System.out.println("[Scheduled Death] " + secondsTTL + " until scheduled death");
                 Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Server will auto-restart in " + secondsTTL + " seconds...");
             }
