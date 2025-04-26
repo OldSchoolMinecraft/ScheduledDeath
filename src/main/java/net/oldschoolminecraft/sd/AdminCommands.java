@@ -51,6 +51,7 @@ public class AdminCommands implements CommandExecutor
             System.out.println("[Scheduled Death] The automatic restart has been cancelled by " + sender.getName());
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been cancelled by the system administrator."));
             plugin.resetTaskTimer();
+            plugin.restartImminent = false; // no longer imminent
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("timer"))
@@ -65,7 +66,9 @@ public class AdminCommands implements CommandExecutor
             try
             {
                 Time time = Time.parseString(args[1]);
-                plugin.incrementTaskTimer(time.toSeconds());
+                double newTTLSeconds = time.toSeconds();
+                plugin.incrementTaskTimer(newTTLSeconds);
+                if (newTTLSeconds > 5) plugin.restartImminent = false; // no longer imminent
                 String unit = time.toString();
                 System.out.println("[Scheduled Death] The automatic restart has been postponed for " + unit + " by " + sender.getName());
                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been postponed for &c" + unit + " &dby the system administrator."));
@@ -79,7 +82,9 @@ public class AdminCommands implements CommandExecutor
             try
             {
                 Time time = Time.parseString(args[1]);
-                plugin.setTaskTimer(time.toSeconds());
+                double newTTLSeconds = time.toSeconds();
+                plugin.setTaskTimer(newTTLSeconds);
+                if (newTTLSeconds > 5) plugin.restartImminent = false; // no longer imminent
                 System.out.println("[Scheduled Death] The automatic restart has been reassigned by " + sender.getName() + ". The server will now restart in: " + time);
                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&dThe automatic restart has been altered by the system administrator. The server will now restart in: &c" + time));
             } catch (Time.TimeParseException ex) {
